@@ -2,7 +2,7 @@
 
 [![Go Version](https://img.shields.io/badge/go-%3E%3D1.25.4-blue.svg)](https://golang.org/dl/) [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/thaikolja/gitup/blob/main/LICENSE) [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20linux%20%7C%20windows-lightgrey.svg)](https://github.com/thaikolja/gitup/releases) [![GitHub stars](https://img.shields.io/github/stars/thaikolja/gitup.svg?style=flat)](https://github.com/thaikolja/gitup/stargazers) [![GitHub issues](https://img.shields.io/github/issues/thaikolja/gitup.svg)](https://github.com/thaikolja/gitup/issues)
 
-**GitUp** makes it easy to share files by uploading them directly to your GitHub repository. The tool handles the complexity of GitHub API integration, file organization, and formatting for you. It's perfect for quickly sharing images, documents, or other files and getting shareable links in return.
+**GitUp** makes it easy to share files by uploading them directly to your GitHub repository. Programmed in Go[^1], the tool handles the complexity of GitHub API integration, file organization, and formatting for you. It's perfect for quickly sharing images, documents, or other files and getting shareable links in return.
 
 ## Features
 
@@ -84,6 +84,10 @@ Example with options:
 ./gitup -v image.jpg
 ```
 
+## Usage in Typora
+
+
+
 ## Author
 
 * [**Kolja Nolte**](https://www.kolja-nolte.com) (kolja.nolte@gmail.com)
@@ -94,4 +98,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ by [Kolja Nolte](https://github.com/thaikolja)
+## Footnotes
+
+[^1]: Please be kind; this is my first Go project ☺️

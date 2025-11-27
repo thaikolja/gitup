@@ -1,6 +1,20 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+    <inspection_tool class="GoUnhandledErrorResult" enabled="true" level="WARNING" enabled_by_default="true">
+      <functions>
+        <function importPath="errors" name="Join" />
+        <function importPath="errors" name="Unwrap" />
+        <function importPath="math/rand" name="Read" />
+        <function importPath="fmt" name="Printf" />
+        <function importPath="fmt" name="Print" />
+        <function importPath="errors" name="New" />
+        <function importPath="fmt" name="Println" />
+        <function importPath="fmt" name="Errorf" />
+        <function importPath="fmt" name="Fprintf" />
+        <function importPath="fmt" name="Fprintln" />
+      </functions>
+    </inspection_tool>
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredIdentifiers">
         <list>

@@ -431,7 +431,12 @@ func pathExistsOnGitHub(owner, repo, folder, filename, token string) (bool, erro
 	if err != nil {
 		return false, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to close response body: %v\n", err)
+		}
+	}(resp.Body)
 
 	switch resp.StatusCode {
 	case http.StatusOK:
@@ -532,7 +537,12 @@ func (u *Uploader) Upload(filePath string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != 201 {
 		body, _ := io.ReadAll(resp.Body)
