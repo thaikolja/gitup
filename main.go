@@ -1,3 +1,13 @@
+/*
+ * Project: GitUp 	Command-line tool to upload files directly to GitHub
+ * File: main.go 	Main application entry point
+ * Version: 		v1.0.0
+ * Author: 			Kolja Nolte
+ * Author URL: 		https://www.kolja-nolte.com
+ * License: 		MIT
+ * Repository: 		https://github.com/thaikolja/gitup
+ */
+
 package main
 
 import (
@@ -21,8 +31,7 @@ const (
 	// configFile is the filename for the JSON configuration file.
 	configFile = "config.json"
 
-	maxUploadSizeBytes    = 25 * 1024 * 1024 // 25 MB practical limit for GitHub API
-	defaultRequestTimeout = 30 * time.Second
+	maxUploadSizeBytes = 25 * 1024 * 1024 // 25 MB practical limit for GitHub API
 )
 
 // Config holds the user's GitUp configuration.
@@ -435,87 +444,6 @@ func pathExistsOnGitHub(owner, repo, folder, filename, token string) (bool, erro
 		body, _ := io.ReadAll(resp.Body)
 		return false, fmt.Errorf("unexpected GitHub API response while checking path (%s): %s - %s", path, resp.Status, string(body))
 	}
-}
-
-// uploadFile uploads the given file to the configured GitHub repository using
-// the Contents API. It determines an upload path based on file extension,
-// encodes the file contents in base64, and performs a PUT request to create
-// the file in the repository. On success, it prints a markdown-formatted URL to stdout.
-func uploadFile(filePath string, config Config) error {
-	// Read file
-	fileData, err := os.ReadFile(filePath)
-	if err != nil {
-		return fmt.Errorf("failed to read file: %v", err)
-	}
-
-	// Get filename
-	filename := filepath.Base(filePath)
-
-	// Sanitize filename
-	sanitizedFilename := sanitizeFilename(filename)
-
-	// Determine upload folder based on file extension
-	folder := getUploadFolder(sanitizedFilename)
-
-	// Construct GitHub API URL
-	parts := strings.Split(config.Repository, "/")
-	if len(parts) != 2 {
-		return fmt.Errorf("invalid repository format. Use: owner/repo")
-	}
-	owner, repo := parts[0], parts[1]
-
-	uniqueFilename, err := ensureUniqueFilename(owner, repo, folder, sanitizedFilename, config.Token)
-	if err != nil {
-		return fmt.Errorf("failed to determine unique filename: %w", err)
-	}
-
-	uploadPath := filepath.Join(folder, uniqueFilename)
-	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/%s",
-		owner, repo, uploadPath)
-
-	// Prepare request body
-	requestBody := map[string]string{
-		"message": fmt.Sprintf("Upload %s via GitUp", filename),
-		"content": base64.StdEncoding.EncodeToString(fileData),
-	}
-
-	bodyJSON, _ := json.Marshal(requestBody)
-
-	// Create HTTP request
-	req, err := http.NewRequest("PUT", apiURL, bytes.NewReader(bodyJSON))
-	if err != nil {
-		return err
-	}
-
-	req.Header.Set("Authorization", "token "+config.Token)
-	req.Header.Set("Content-Type", "application/json")
-
-	// Send request
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if cerr := resp.Body.Close(); cerr != nil {
-			if _, logErr := fmt.Fprintf(os.Stderr, "warning: failed to close response body: %v\n", cerr); logErr != nil {
-				fmt.Fprintf(os.Stderr, "warning: failed to report close error: %v\n", logErr)
-			}
-		}
-	}()
-
-	if resp.StatusCode != 201 {
-		body, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("GitHub API error: %s - %s", resp.Status, string(body))
-	}
-
-	// Print success message with URL
-	rawURL := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/main/%s", owner, repo, uploadPath)
-	output := formatOutput(filename, rawURL)
-
-	fmt.Println(output)
-
-	return nil
 }
 
 // validateInputFile checks if the given file path refers to a valid, accessible file.

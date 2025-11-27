@@ -9,6 +9,7 @@
 *.dylib
 
 .idea/
+QWEN.md
 
 # Test binary, built with `go test -c`
 *.test
